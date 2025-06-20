@@ -48,7 +48,7 @@ app.use("/trace", traceRoutes);
 app.use("/logs", logRoutes);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/src/', 'main.jsx'));
+  res.sendFile(path.join(__dirname, 'public/src/', 'index.html'));
 });
 
 app.listen(PORT, function () {
