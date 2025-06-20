@@ -50,7 +50,7 @@ app.use("/trace", traceRoutes);
 app.use("/logs", logRoutes);
 
 
-app.get(/.*/, (req, res) => {
+app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, 'public', 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
