@@ -29,7 +29,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await axios.post(`/login`, {
+      const response = await axios.post(`${API_URL}login`, {
         username,
         password,
       });

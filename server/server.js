@@ -13,6 +13,7 @@ import "./services/updateContainers.js" // update container every x mins
 import logRoutes from "./routes/logRoutes.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const knex = initKnex(configuration);
 const app = express();
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
   res.send("Catstone API");
 });
 
+
 app.use("/login", authRoutes);
 app.use("/track", trackRoutes);
 app.use("/addshipment", addshipmentRoutes);
@@ -47,9 +49,16 @@ app.use("/client", clientRoutes);
 app.use("/trace", traceRoutes);
 app.use("/logs", logRoutes);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/src/', 'index.html'));
+
+app.get(/.*/, (req, res) => {
+  const indexPath = path.join(__dirname, 'public', 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(500).send("index.html not found — did you run `npm run build`?");
+  }
 });
+
 
 app.listen(PORT, function () {
   console.log(`Listening on port ${PORT}...`);
