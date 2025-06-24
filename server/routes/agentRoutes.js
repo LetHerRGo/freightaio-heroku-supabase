@@ -74,7 +74,6 @@ router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
   }
 
   if (selectError && selectError.code !== "PGRST116") {
-    // PGRST116 = No rows returned (safe to ignore in this context)
     return res.status(500).json({ message: "Failed to check existing agent." });
   }
 

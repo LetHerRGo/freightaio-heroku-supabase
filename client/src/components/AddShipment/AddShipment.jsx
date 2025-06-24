@@ -72,7 +72,12 @@ function AddShipment() {
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get(`/client`);
+      const response = await axios.get(`/client`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       setClients(response.data);
     } catch (error) {
       console.error("Error fetching client names:", error);
