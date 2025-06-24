@@ -1,6 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+import supabase from './supabase.js'
+import "dotenv/config";
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+// const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 const authenticateUser = async (username, password) => {
   let user = null;

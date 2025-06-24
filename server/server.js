@@ -7,15 +7,16 @@ import addshipmentRoutes from "./routes/addshipmentRoutes.js"
 import agentRoutes from "./routes/agentRoutes.js"
 import clientRoutes from "./routes/clientRoutes.js"
 import traceRoutes from "./routes/traceRoutes.js"
-import initKnex from "knex";
-import configuration from "./knexfile.js";
+// import initKnex from "knex";
+// import configuration from "./knexfile.js";
 import "./services/updateContainers.js" // update container every x mins
 import logRoutes from "./routes/logRoutes.js";
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-const knex = initKnex(configuration);
+
+// const knex = initKnex(configuration);
 const app = express();
 
 // Resolve __dirname (since you're using ES modules)
