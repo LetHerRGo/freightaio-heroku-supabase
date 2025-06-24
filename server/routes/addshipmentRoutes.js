@@ -16,8 +16,8 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
 
   const { ctnrNum, agentName, clientName, refNum } = req.body;
 
- 
-  const { data: existing, error: existingError } = await supabase
+  // Check if container exists
+  const { data: existing } = await supabase
     .from("containers")
     .select("id")
     .eq("container_number", ctnrNum)
@@ -27,12 +27,13 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
     return res.status(409).json({ message: `Container '${ctnrNum}' already exists.` });
   }
 
-  if (existingError && existingError.code !== "PGRST116") {
-    return res.status(500).json({ message: "Error checking container." });
-  }
-
- 
-  const [{ data: agent }, { data: operator }, { data: forwarder }, { data: client }] = await Promise.all([
+  // Fetch foreign keys
+  const [
+    { data: agent, error: agentError },
+    { data: operator, error: operatorError },
+    { data: forwarder, error: forwarderError },
+    { data: client, error: clientError }
+  ] = await Promise.all([
     supabase.from("agent").select("id").eq("name", agentName).single(),
     supabase.from("forwarder_operator").select("id").eq("username", req.user.username).single(),
     supabase.from("forwarder_operator").select("forwarder_id").eq("username", req.user.username).single(),
@@ -44,8 +45,8 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
   }
 
   try {
-    
-    const { data: inserted, error: insertError } = await supabase
+    // Insert into containers
+    const { data: containerInsert, error: containerInsertError } = await supabase
       .from("containers")
       .insert({
         container_number: ctnrNum,
@@ -58,28 +59,31 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
       .select("id")
       .single();
 
-    if (insertError) {
-      throw insertError;
-    }
+    if (containerInsertError) throw containerInsertError;
 
-    const container_id = inserted.id;
+    const container_id = containerInsert.id;
 
-    
+    // Fetch tracking info
     const trackingData = await cnTracking([ctnrNum]);
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
     const status = equipment?.ETA?.Time ? "In Transit" : "Pending";
 
-    await supabase.from("container_movements").insert({
-      container_id,
-      status,
-      location: equipment?.Event?.Location?.Station || "N/A",
-      event_description: equipment?.Event?.Description || "N/A",
-      event_time: equipment?.Event?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
-      customs_status: equipment?.CustomsHold?.Description || "N/A",
-      destination: equipment?.Destination?.Station || "N/A",
-      ETA: equipment?.ETA?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
-      storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
-    });
+    // Insert into container_movements
+    const { error: moveInsertError } = await supabase
+      .from("container_movements")
+      .insert({
+        container_id,
+        status,
+        location: equipment?.Event?.Location?.Station || "N/A",
+        event_description: equipment?.Event?.Description || "N/A",
+        event_time: equipment?.Event?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
+        customs_status: equipment?.CustomsHold?.Description || "N/A",
+        destination: equipment?.Destination?.Station || "N/A",
+        ETA: equipment?.ETA?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
+        storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
+      });
+
+    if (moveInsertError) throw moveInsertError;
 
     res.json({ message: `Container '${ctnrNum}' has been added and tracking info recorded.` });
   } catch (error) {
