@@ -5,7 +5,7 @@ import svgr from 'vite-plugin-svgr';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
-  base: "./", // Ensures correct relative paths when served from Express
+  base: "/", // Ensures correct relative paths when served from Express
   build: {
     outDir: "../server/public", // Output Vite build to Express's public folder
     emptyOutDir: true,          // Clean folder before build
