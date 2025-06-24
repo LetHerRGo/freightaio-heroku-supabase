@@ -67,7 +67,8 @@ router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
     .from("agent")
     .select("*")
     .eq("name", name)
-    .single();
+    .eq("forwarder_id", forwarder_id)
+    .maybeSingle();
 
   if (existing) {
     return res.status(409).json({ message: "Agent already exists." });

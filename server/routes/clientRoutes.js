@@ -62,7 +62,8 @@ router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
     .from("client")
     .select("*")
     .eq("name", name)
-    .single();
+    .eq("forwarder_id", forwarder.forwarder_id)
+  .maybeSingle(); // Use maybeSingle in case it returns null
 
   if (existing) {
     return res.status(409).json({ message: "Client already exists." });
