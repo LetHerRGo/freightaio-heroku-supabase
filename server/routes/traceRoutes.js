@@ -60,6 +60,7 @@ router.get('/', verifyToken, verifyRole(['operator', 'agent', 'client']), async 
     res.status(200).json(data);
   } catch (error) {
     console.error("Error retrieving container trace data:", error);
+    console.error("Trace fetch error:", error); // Add this
     res.status(500).json({ message: "Failed to retrieve trace data." });
   }
 });
