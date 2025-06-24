@@ -68,6 +68,9 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
     const status = equipment?.ETA?.Time ? "In Transit" : "Pending";
 
+    console.log("📦 Tracking LastFreeDay:", equipment?.StorageCharge?.LastFreeDay);
+
+
     // Insert into container_movements
     const { error: moveInsertError } = await supabase
       .from("container_movements")
