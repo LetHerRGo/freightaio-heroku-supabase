@@ -1,43 +1,64 @@
-import jwt from "jsonwebtoken";
-import initKnex from "knex";
-import configuration from "../knexfile.js";
+import { createClient } from '@supabase/supabase-js';
 
-const knex = initKnex(configuration);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// Function to authenticate the user and assign a role
 const authenticateUser = async (username, password) => {
-    let user = null;
-    let role = null;
-// check which type of user is and asign role
-    user = await knex('agent_user').where({username}).first();
-    if (user) {
-        role = 'agent';
+  let user = null;
+  let role = null;
+
+  // Try agent_user
+  let { data, error } = await supabase
+    .from('agent_user')
+    .select('*')
+    .eq('username', username)
+    .single();
+
+  if (data) {
+    user = data;
+    role = 'agent';
+  } else {
+    ({ data, error } = await supabase
+      .from('client_user')
+      .select('*')
+      .eq('username', username)
+      .single());
+
+    if (data) {
+      user = data;
+      role = 'client';
     } else {
-        user = await knex('client_user').where({username}).first();
-        if (user) {
-            role = 'client';
-        } else {
-            user = await knex('forwarder_operator').where({username}).first();
-            if (user) {
-                role = 'operator';
-            }
-        }
-    }
+      ({ data, error } = await supabase
+        .from('forwarder_operator')
+        .select('*')
+        .eq('username', username)
+        .single());
 
-    if (!user) {
-        throw new Error ('User not found');
+      if (data) {
+        user = data;
+        role = 'operator';
+      }
     }
+  }
 
-    if (user.password !== password) {
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  if (user.password !== password) {
     throw new Error('Invalid credentials');
   }
 
-    const token = jwt.sign ({
-        id: user.id,
-        username: user.username,
-        role: role,
-    }, 'your_jwt_secret', {expiresIn: '12h'});
-    return token;
+  const token = jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+      role,
+    },
+    process.env.JWT_SECRET || 'your_jwt_secret',
+    { expiresIn: '12h' }
+  );
+
+  return token;
 };
 
 export default authenticateUser;

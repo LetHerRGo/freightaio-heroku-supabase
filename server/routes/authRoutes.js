@@ -1,10 +1,10 @@
-import initKnex from "knex";
+// import initKnex from "knex";
 import express from "express";
-import jwt from "jsonwebtoken";
-import configuration from "../knexfile.js";
+// import jwt from "jsonwebtoken";
+// import configuration from "../knexfile.js";
 import authenticateUser from "../services/authService.js";
 
-const knex = initKnex(configuration);
+// const knex = initKnex(configuration);
 const router = express.Router();
 
 router.post('/', async (req, res) => {
