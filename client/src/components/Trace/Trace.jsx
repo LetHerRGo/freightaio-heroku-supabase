@@ -27,12 +27,12 @@ function Track() {
   const [sortByColumn, setSortByColumn] = useState();
   const [sortOrder, setSortOrder] = useState();
 
-  const apiUrl = import.meta.env.VITE_APP_API_URL;
+  // const apiUrl = import.meta.env.VITE_APP_API_URL;
   const token = localStorage.getItem("token");
 
   const readData = async (sortBy, order) => {
     try {
-      let url = `${apiUrl}trace`;
+      let url = "/trace";
       if (sortBy && order) {
         url += `?sortBy=${sortBy}&order=${order}`;
       }
@@ -65,7 +65,7 @@ function Track() {
   // delete function
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${apiUrl}trace/${id}`, {
+      await axios.delete(`/trace/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

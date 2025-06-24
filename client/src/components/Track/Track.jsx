@@ -40,7 +40,7 @@ function Track() {
 
     try {
       const response = await axios.post(
-        `${apiUrl}track`,
+        `/track`,
         { ctnrNums: ctnrNums },
         {
           headers: {
