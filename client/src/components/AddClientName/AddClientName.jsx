@@ -20,7 +20,6 @@ function AddClientName({
   const [clientName, setClientName] = useState("");
 
   const token = localStorage.getItem("token");
-  // const apiUrl = import.meta.env.VITE_APP_API_URL;
 
   const handleAddAgent = async () => {
     if (!clientName.trim()) return;

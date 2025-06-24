@@ -18,8 +18,6 @@ function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_APP_API_URL;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

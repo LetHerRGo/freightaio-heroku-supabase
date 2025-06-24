@@ -21,8 +21,6 @@ function Track() {
   const [ctnrData, setCtnrData] = useState([]);
   const [error, setError] = useState("");
 
-  const apiUrl = import.meta.env.VITE_APP_API_URL;
-
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
     if (!isAuthenticated) {

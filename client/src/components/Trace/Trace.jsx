@@ -17,7 +17,7 @@ import MovementLogDialog from "../MovementLogDialog/MovementLogDialog";
 import DeleteContainerDialog from "../DeleteContainerDialog/DeleteContainerDialog";
 import { FaSort } from "react-icons/fa";
 
-function Track() {
+function Trace() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [ctnrData, setCtnrData] = useState([]);
@@ -204,7 +204,9 @@ function Track() {
                   <Table.Cell hideBelow="md">{item.location}</Table.Cell>
                   <Table.Cell>{item.customs_status}</Table.Cell>
                   <Table.Cell>{item.destination}</Table.Cell>
-                  <Table.Cell>{item.ETA || "N/A"}</Table.Cell>
+                  <Table.Cell>
+                    {item.ETA ? new Date(item.ETA).toLocaleString() : "N/A"}
+                  </Table.Cell>
                   <Table.Cell>{item.storage_last_free_day || "N/A"}</Table.Cell>
                   <Table.Cell>
                     <Badge
@@ -272,4 +274,4 @@ function Track() {
   );
 }
 
-export default Track;
+export default Trace;

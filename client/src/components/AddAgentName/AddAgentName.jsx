@@ -20,7 +20,6 @@ function AddAgentName({
   const [agentName, setAgentName] = useState("");
 
   const token = localStorage.getItem("token");
-  // const apiUrl = import.meta.env.VITE_APP_API_URL;
 
   const handleAddAgent = async () => {
     if (!agentName.trim()) return;
