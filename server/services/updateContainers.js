@@ -9,7 +9,7 @@ import supabase from './supabase.js'
 const cleanTime = (t) =>
   typeof t === "string" ? t.replace(/ [A-Z]{2,3}$/, "") : null;
 
-cron.schedule('5 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
   console.log(`[CRON] Updating container statuses at ${new Date().toISOString()}`);
 
   try {
