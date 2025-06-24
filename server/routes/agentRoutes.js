@@ -8,13 +8,30 @@ import supabase from "../services/supabase.js";
 // const knex = initKnex(configuration);
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-   try {
-    const { data: agents, error } = await supabase
-      .from("agent")
-      .select("id, name");
+router.get("/", verifyToken, verifyRole('operator'), async (req, res) => {
+  const { username } = req.user;
 
-    if (error) {
+   try {
+    // Step 1: Get forwarder_id from operator
+    const { data: operator, error: operatorError } = await supabase
+      .from("forwarder_operator")
+      .select("forwarder_id")
+      .eq("username", username)
+      .single();
+
+    if (operatorError || !operator) {
+      return res.status(404).json({ message: "Operator's forwarder ID not found." });
+    }
+
+    const forwarder_id = operator.forwarder_id;
+
+
+    const { data: agents, agentError  } = await supabase
+      .from("agent")
+      .select("id, name")
+      .eq("forwarder_id", forwarder_id);
+
+    if (agentError) {
       return res.status(500).json({ message: "Unable to retrieve data." });
     }
 
@@ -26,10 +43,24 @@ router.get("/", async (req, res) => {
 
 router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
   const { name } = req.body;
+  const { username } = req.user;
 
   if (!name || typeof name !== "string") {
     return res.status(400).json({ message: "Agent name is required." });
   }
+
+  // 1. Get forwarder_id from the operator's username
+  const { data: operator, error: operatorError } = await supabase
+    .from("forwarder_operator")
+    .select("forwarder_id")
+    .eq("username", username)
+    .single();
+
+  if (operatorError || !operator) {
+    return res.status(404).json({ message: "Operator's forwarder ID not found." });
+  }
+
+  const forwarder_id = operator.forwarder_id;
 
   // Check for existing agent
   const { data: existing, error: selectError } = await supabase
@@ -50,7 +81,7 @@ router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
   // Insert agent
   const { data, error: insertError } = await supabase
     .from("agent")
-    .insert({ name })
+    .insert({ name, forwarder_id })
     .select("id")
     .single();
 
