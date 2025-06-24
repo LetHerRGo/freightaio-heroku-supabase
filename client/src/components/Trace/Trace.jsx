@@ -200,12 +200,22 @@ function Track() {
                   <Table.Cell hideBelow="md">
                     {item.event_description}
                   </Table.Cell>
-                  <Table.Cell hideBelow="md">{item.event_time}</Table.Cell>
+                  <Table.Cell hideBelow="md">
+                    {new Date(item.event_time).toLocaleString()}
+                  </Table.Cell>
                   <Table.Cell hideBelow="md">{item.location}</Table.Cell>
                   <Table.Cell>{item.customs_status}</Table.Cell>
                   <Table.Cell>{item.destination}</Table.Cell>
-                  <Table.Cell>{item.ETA || "N/A"}</Table.Cell>
-                  <Table.Cell>{item.storage_last_free_day || "N/A"}</Table.Cell>
+                  <Table.Cell>
+                    {item.ETA ? new Date(item.ETA).toLocaleString() : "N/A"}
+                  </Table.Cell>
+                  <Table.Cell>
+                    {item.storage_last_free_day
+                      ? new Date(
+                          item.storage_last_free_day
+                        ).toLocaleDateString()
+                      : "N/A"}
+                  </Table.Cell>
                   <Table.Cell>
                     <Badge
                       colorPalette={getStatusColor(item.status)}
