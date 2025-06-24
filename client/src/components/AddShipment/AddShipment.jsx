@@ -34,7 +34,7 @@ function AddShipment() {
   const [dialogError, setDialogError] = useState("");
 
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_APP_API_URL;
+  // const apiUrl = import.meta.env.VITE_APP_API_URL;
   const token = localStorage.getItem("token");
 
   //open dialog for adding agent or client name
@@ -57,7 +57,7 @@ function AddShipment() {
 
   const fetchAgents = async () => {
     try {
-      const response = await axios.get(`${apiUrl}agent`);
+      const response = await axios.get(`/agent`);
       setAgents(response.data); // Assuming response is an array of agent names
     } catch (error) {
       console.error("Error fetching agent names:", error);
@@ -67,7 +67,7 @@ function AddShipment() {
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get(`${apiUrl}client`);
+      const response = await axios.get(`/client`);
       setClients(response.data);
     } catch (error) {
       console.error("Error fetching client names:", error);
@@ -104,7 +104,7 @@ function AddShipment() {
 
     try {
       const response = await axios.post(
-        `${apiUrl}addshipment`,
+        `/addshipment`,
         {
           ctnrNum: ctnrNum,
           agentName: agentName,

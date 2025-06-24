@@ -14,14 +14,14 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
-  const apiUrl = import.meta.env.VITE_APP_API_URL;
+  // const apiUrl = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchLogs = async () => {
       if (!isOpen || !containerId) return;
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}logs/${containerId}`, {
+        const response = await axios.get(`/logs/${containerId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLogs(response.data);
