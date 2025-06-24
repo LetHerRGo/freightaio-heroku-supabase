@@ -200,7 +200,9 @@ function Trace() {
                   <Table.Cell hideBelow="md">
                     {item.event_description}
                   </Table.Cell>
-                  <Table.Cell hideBelow="md">{item.event_time}</Table.Cell>
+                  <Table.Cell hideBelow="md">
+                    {new Date(item.event_time).toLocaleString()}
+                  </Table.Cell>
                   <Table.Cell hideBelow="md">{item.location}</Table.Cell>
                   <Table.Cell>{item.customs_status}</Table.Cell>
                   <Table.Cell>{item.destination}</Table.Cell>
