@@ -64,7 +64,9 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
                     >
                       <Text>
                         <strong>ETA:</strong>{" "}
-                        {log.ETA ? new Date(log.ETA).toLocaleString() : "N/A"}
+                        {log.ETA
+                          ? new Date(log.ETA + "Z").toLocaleString()
+                          : "N/A"}
                       </Text>
                       <Text>
                         <strong>Event:</strong> {log.event_description}
@@ -72,7 +74,7 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
                       <Text>
                         <strong>Event Time:</strong>{" "}
                         {log.event_time
-                          ? new Date(log.event_time).toLocaleString()
+                          ? new Date(log.event_time + "Z").toLocaleString()
                           : "N/A"}
                       </Text>
                       <Text>
