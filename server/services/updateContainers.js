@@ -1,10 +1,8 @@
-// import initKnex from "knex";
 import cron from "node-cron";
 import cnTracking from './cnTracking.js';
-// import configuration from "../knexfile.js";
 import supabase from './supabase.js'
 
-// const knex = initKnex(configuration);
+
 
 const cleanTime = (t) =>
   typeof t === "string" ? t.replace(/ [A-Z]{2,3}$/, "") : null;
@@ -79,7 +77,7 @@ cron.schedule('*/10 * * * *', async () => {
           updated_at: new Date()
         });
 
-        console.log(`📝 Logged ETA change for container_id ${container_number}`);
+        console.log(`Logged ETA change for container_id ${container_number}`);
       }
 
       // Update latest movement

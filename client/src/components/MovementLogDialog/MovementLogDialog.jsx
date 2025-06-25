@@ -21,7 +21,7 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
       if (!isOpen || !containerId) return;
       setLoading(true);
       try {
-        const response = await axios.get(`/logs/${containerId}`, {
+        const response = await axios.get(`/logs/${containerNumber}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setLogs(response.data);

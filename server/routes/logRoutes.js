@@ -8,10 +8,29 @@ import supabase from "../services/supabase.js";
 // const knex = initKnex(configuration);
 const router = express.Router();
 
-router.get('/:containerId', verifyToken, verifyRole('operator'), async (req, res) => {
-  const { containerId } = req.params;
+router.get('/:containerNumber', verifyToken, verifyRole('operator'), async (req, res) => {
+  const { container_number } = req.params;
 
   try {
+
+    const { data: containers, error: containerError } = await supabase
+      .from("containers")
+      .select("id")
+      .eq("container_number", container_number)
+      .single();
+
+    if (containerError) {
+      throw containerError;
+    }
+
+    if (!containers) {
+      return res.status(404).json({ message: "Container not found." });
+    }
+
+    const containerId = containers.id;
+
+
+
     const { data: logs, error } = await supabase
       .from("container_movement_logs")
       .select("*")
