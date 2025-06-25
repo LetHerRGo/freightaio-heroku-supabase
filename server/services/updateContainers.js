@@ -9,15 +9,14 @@ import supabase from './supabase.js'
 const cleanTime = (t) =>
   typeof t === "string" ? t.replace(/ [A-Z]{2,3}$/, "") : null;
 
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   console.log(`[CRON] Updating container statuses at ${new Date().toISOString()}`);
 
   try {
     // Get all containers to update
     const { data: containersToUpdate, error } = await supabase
       .from("containers")
-      .select("id, container_number")
-      .gte("id", 8);
+      .select("id, container_number");
 
     if (error) throw error;
 
