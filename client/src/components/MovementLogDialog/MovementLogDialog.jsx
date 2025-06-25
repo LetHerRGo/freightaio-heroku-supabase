@@ -83,7 +83,7 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
                       </Text>
                       <Text>
                         <strong>Updated:</strong>{" "}
-                        {new Date(log.updated_at).toLocaleString()}
+                        {new Date(log.updated_at + "Z").toLocaleString()}
                       </Text>
                     </Box>
                   ))}
