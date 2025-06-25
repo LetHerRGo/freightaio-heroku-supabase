@@ -14,7 +14,6 @@ function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem("token");
-  // const apiUrl = import.meta.env.VITE_APP_API_URL;
 
   useEffect(() => {
     const fetchLogs = async () => {

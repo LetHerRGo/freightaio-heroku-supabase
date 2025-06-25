@@ -9,14 +9,14 @@ import supabase from "../services/supabase.js";
 const router = express.Router();
 
 router.get('/:containerNumber', verifyToken, verifyRole('operator'), async (req, res) => {
-  const { container_number } = req.params;
+  const { containerNumber } = req.params;
 
   try {
 
     const { data: containers, error: containerError } = await supabase
       .from("containers")
       .select("id")
-      .eq("container_number", container_number)
+      .eq("container_number", containerNumber)
       .single();
 
     if (containerError) {
