@@ -68,9 +68,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
     const trackingData = await cnTracking([ctnrNum]);
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
     const status = equipment?.ETA?.Time ? "In Transit" : "Pending";
-    const parsedETA = parseTime(equipment?.ETA?.Time)
-
-    console.log("📦 Tracking LastFreeDay:", equipment?.StorageCharge?.LastFreeDay);
+    // const parsedETA = parseTime(equipment?.ETA?.Time)
 
 
     // Insert into container_movements
@@ -81,10 +79,10 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
         status,
         location: equipment?.Event?.Location?.Station || "N/A",
         event_description: equipment?.Event?.Description || "N/A",
-        event_time: equipment?.Event?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
+        event_time: equipment?.Event?.Time|| null,
         customs_status: equipment?.CustomsHold?.Description || "N/A",
         destination: equipment?.Destination?.Station || "N/A",
-        ETA: parsedETA,
+        ETA: equipment?.ETA?.Time|| null,
         storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
       });
 
