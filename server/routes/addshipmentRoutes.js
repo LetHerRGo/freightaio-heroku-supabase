@@ -5,6 +5,7 @@ import verifyRole from "../services/verifyRole.js";
 // import configuration from "../knexfile.js";
 import cnTracking from "../services/cnTracking.js"
 import supabase from "../services/supabase.js";
+import { parseTime } from "../services/timeParser.js";
 
 
 const router = express.Router();
@@ -67,6 +68,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
     const trackingData = await cnTracking([ctnrNum]);
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
     const status = equipment?.ETA?.Time ? "In Transit" : "Pending";
+    const parsedETA = parseTime(equipment?.ETA?.Time)
 
     console.log("📦 Tracking LastFreeDay:", equipment?.StorageCharge?.LastFreeDay);
 
@@ -82,7 +84,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
         event_time: equipment?.Event?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
         customs_status: equipment?.CustomsHold?.Description || "N/A",
         destination: equipment?.Destination?.Station || "N/A",
-        ETA: equipment?.ETA?.Time?.replace(/ [A-Z]{2,3}$/, "") || null,
+        ETA: parsedETA,
         storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
       });
 
