@@ -82,7 +82,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
         event_time: equipment?.Event?.Time|| null,
         customs_status: equipment?.CustomsHold?.Description || "N/A",
         destination: equipment?.Destination?.Station || "N/A",
-        ETA: equipment?.ETA?.Time|| null,
+        ETA: `"2025-08-31 10:55 ET".toString()`,
         storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
       });
 
