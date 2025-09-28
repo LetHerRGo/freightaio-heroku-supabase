@@ -15,7 +15,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 
-function Track() {
+function Trace() {
   const navigate = useNavigate();
   const [ctnrNums, setCtnrNums] = useState("");
   const [ctnrData, setCtnrData] = useState([]);
@@ -148,4 +148,4 @@ function Track() {
   );
 }
 
-export default Track;
+export default Trace;
