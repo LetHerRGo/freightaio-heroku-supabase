@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Flex, IconButton, Box, Avatar, Heading } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
@@ -20,11 +20,23 @@ export default function Sidebar({ navSize, onToggleNav }) {
     username = decoded.username;
   }
 
-  const handleLogout = (e) => {
+  const navItems = [
+    { icon: MdOutlineDirectionsRailway, title: "Trace", path: "/home/trace" },
+    { icon: CiSearch, title: "Track", path: "/home/track" },
+    { icon: CgPlayListAdd, title: "Add Shipment", path: "/home/addshipment" },
+    { icon: CiLogout, title: "Log Out", action: "logout" },
+  ];
+
+  const handleNavigate = useCallback(
+    (path) => () => navigate(path),
+    [navigate]
+  );
+
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("token");
     navigate("/login");
-  };
+  }, [navigate]);
 
   return (
     <Flex
@@ -62,33 +74,16 @@ export default function Sidebar({ navSize, onToggleNav }) {
         >
           <FiMenu />
         </IconButton>
-        <NavItem
-          navSize={navSize}
-          icon={MdOutlineDirectionsRailway}
-          title="Trace"
-          active={location.pathname === "/home/trace"}
-          onClick={() => navigate("/home/trace")}
-        />
-        <NavItem
-          navSize={navSize}
-          icon={CiSearch}
-          title="Track"
-          active={location.pathname === "/home/track"}
-          onClick={() => navigate("/home/track")}
-        />
-        <NavItem
-          navSize={navSize}
-          icon={CgPlayListAdd}
-          title="Add Shipment"
-          active={location.pathname === "/home/addshipment"}
-          onClick={() => navigate("/home/addshipment")}
-        />
-        <NavItem
-          navSize={navSize}
-          icon={CiLogout}
-          title="Log Out"
-          onClick={handleLogout}
-        />
+        {navItems.map(({ icon, title, path, action }) => (
+          <NavItem
+            key={title}
+            navSize={navSize}
+            icon={icon}
+            title={title}
+            active={path ? location.pathname === path : false}
+            onClick={action === "logout" ? handleLogout : handleNavigate(path)}
+          />
+        ))}
       </Flex>
 
       <Flex

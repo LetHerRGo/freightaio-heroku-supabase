@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Text, Icon, Button } from "@chakra-ui/react";
 
-export default function NavItem({ icon, title, active, navSize, onClick }) {
+function NavItem({ icon, title, active, navSize, onClick }) {
   return (
     <Flex
       mt={4}
@@ -18,15 +18,15 @@ export default function NavItem({ icon, title, active, navSize, onClick }) {
         p={2}
         _hover={{
           bg: "#AEC8CA",
-          boxShadow: "none", // Removes shadow on hover
+          boxShadow: "none",
         }}
         _active={{
           bg: "#AEC8CA",
-          boxShadow: "none", // Removes shadow when clicked
+          boxShadow: "none",
         }}
         _focus={{
-          boxShadow: "none", // Removes the blue focus outline
-          outline: "none", // Additional safeguard
+          boxShadow: "none",
+          outline: "none",
         }}
       >
         <Icon
@@ -48,3 +48,6 @@ export default function NavItem({ icon, title, active, navSize, onClick }) {
     </Flex>
   );
 }
+
+// ✅ Memoized export
+export default React.memo(NavItem);
