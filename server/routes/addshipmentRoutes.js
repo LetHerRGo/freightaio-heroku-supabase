@@ -67,6 +67,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
     // Fetch tracking info
     const trackingData = await cnTracking([ctnrNum]);
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
+    console.log(equipment.ETA.Time)
     const status = equipment?.ETA?.Time ? "In Transit" : "Pending";
     // const parsedETA = parseTime(equipment?.ETA?.Time)
 
@@ -79,10 +80,10 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
         status,
         location: equipment?.Event?.Location?.Station || "N/A",
         event_description: equipment?.Event?.Description || "N/A",
-        event_time: equipment?.Event?.Time|| null,
+        event_time: equipment?.Event?.Time || null,
         customs_status: equipment?.CustomsHold?.Description || "N/A",
         destination: equipment?.Destination?.Station || "N/A",
-        ETA: `"2025-08-31 10:55 ET".toString()`,
+        ETA: equipment?.ETA?.Time || null,
         storage_last_free_day: equipment?.StorageCharge?.LastFreeDay || null
       });
 
