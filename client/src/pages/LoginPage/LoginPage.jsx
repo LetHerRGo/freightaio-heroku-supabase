@@ -13,7 +13,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Logo from "../../assets/logo/logo_with_text.svg?react";
-import CustomAlert from "@/components/CustomAlert/CustomAlert";
+import CustomAlert from "../../components/CustomAlert/CustomAlert";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
