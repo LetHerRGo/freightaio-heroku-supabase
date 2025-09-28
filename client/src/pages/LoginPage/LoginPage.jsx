@@ -13,6 +13,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Logo from "../../assets/logo/logo_with_text.svg?react";
+import CustomAlert from "@/components/CustomAlert/CustomAlert";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
@@ -67,9 +68,11 @@ function LoginPage() {
             Login
           </Heading>
           {error && (
-            <Text color="red.500" fontSize="sm" textAlign="center">
-              {error}
-            </Text>
+            <CustomAlert
+              status="error"
+              alertMessage={error}
+              onClose={() => setError("")}
+            />
           )}
           <form onSubmit={handleSubmit}>
             <VStack spacing={4}>
