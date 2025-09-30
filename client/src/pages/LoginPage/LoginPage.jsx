@@ -117,7 +117,7 @@ function LoginPage() {
               <HStack justify="space-between" w="100%">
                 <Link
                   as={RouterLink}
-                  to="/forgot-password"
+                  to="/resetpassword"
                   color="#275765"
                   fontSize="sm"
                   _hover={{ color: "#d87f8c", textDecoration: "none" }}

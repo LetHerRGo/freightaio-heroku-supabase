@@ -4,6 +4,8 @@ import HomePage from "./pages/HomePage/HomePage.jsx";
 import Track from "./components/Track/Track.jsx";
 import AddShipment from "./components/AddShipment/AddShipment.jsx";
 import Trace from "./components/Trace/Trace.jsx";
+import SignupPage from "./pages/SignupPage/SignupPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage.jsx";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
           <Route path="trace" element={<Trace />} />
           <Route path="addshipment" element={<AddShipment />} />
         </Route>
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/resetpassword" element={<ResetPasswordPage />} />
       </Routes>
     </Router>
   );
