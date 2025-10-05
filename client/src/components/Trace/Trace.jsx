@@ -119,8 +119,8 @@ function Trace() {
   };
 
   return (
-    <Box ml="50px" p="6" w="auto">
-      <Flex direction="column" justify="center" gap="5">
+    <Box overflowX="auto">
+      <Flex direction="column" justify="center" gap="5" p="1" m="1">
         <Heading size="6xl" letterSpacing="tight" textAlign="center">
           <Highlight query="FREIGHTAIO" styles={{ color: "#79a5b2" }}>
             WELCOME TO THE FREIGHTAIO

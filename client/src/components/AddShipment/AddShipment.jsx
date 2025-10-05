@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -36,6 +36,7 @@ function AddShipment() {
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
+  const focusRef = useRef();
 
   //open dialog for adding agent or client name
   const openAddAgentDialog = (item) => {
@@ -90,6 +91,7 @@ function AddShipment() {
     if (!isAuthenticated) {
       navigate("/"); // if not login, direct to /
     }
+    focusRef.current.focus();
 
     fetchClients();
     fetchAgents();
@@ -148,8 +150,8 @@ function AddShipment() {
   };
 
   return (
-    <Box ml="50px" p="6" w="auto">
-      <Flex direction="column" justify="center" gap="5">
+    <Box overflowX="auto">
+      <Flex direction="column" justify="center" gap="5" p="1" m="1">
         <Heading size="6xl" letterSpacing="tight" textAlign="center">
           <Highlight query="FREIGHTAIO" styles={{ color: "#79a5b2" }}>
             WELCOME TO THE FREIGHTAIO
@@ -220,6 +222,7 @@ function AddShipment() {
               type="text"
               value={refNum}
               onChange={(e) => setRefNum(e.target.value)}
+              ref={focusRef}
             />
           </Field.Root>
           <Field.Root>

@@ -63,16 +63,22 @@ export default function Sidebar({ navSize, onToggleNav }) {
           aria-label="Toggle sidebar"
           background="none"
           mt={5}
+          border="none"
           _hover={{
             background: "#d8ecee",
             boxShadow: "none",
             textDecor: "none",
+            border: "none",
           }}
-          _focus={{ boxShadow: "none" }}
-          _active={{ boxShadow: "none" }}
+          _focus={{ boxShadow: "none", border: "none" }}
+          _active={{ boxShadow: "none", border: "none" }}
           onClick={onToggleNav}
         >
-          <FiMenu />
+          <FiMenu
+            border="none"
+            _focus={{ boxShadow: "none", border: "none" }}
+            _active={{ boxShadow: "none", border: "none" }}
+          />
         </IconButton>
         {navItems.map(({ icon, title, path, action }) => (
           <NavItem
