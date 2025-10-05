@@ -18,13 +18,20 @@ export default function HomePage() {
     setNavSize((prev) => (prev === "small" ? "large" : "small"));
   };
   return (
-    <Box w="100vw">
-      <Flex>
+    <Flex h="100vh" w="100vw" overflow="hidden">
+      {/* Sidebar Section */}
+      <Box
+        as="aside"
+        w={navSize === "small" ? "80px" : "250px"}
+        flexShrink={0} // ✅ prevents sidebar from shrinking
+      >
         <Sidebar navSize={navSize} onToggleNav={toggleNavSize} />
-        <Flex justifyContent="stretch" margin="0 auto">
-          <Outlet />
-        </Flex>
+      </Box>
+
+      {/* Main Content Section */}
+      <Flex p="1" w="100%" flex="1" justifyContent="center">
+        <Outlet /> {/* ✅ Trace, Track, AddShipment render here */}
       </Flex>
-    </Box>
+    </Flex>
   );
 }

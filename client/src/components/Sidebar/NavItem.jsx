@@ -5,6 +5,7 @@ function NavItem({ icon, title, active, navSize, onClick }) {
   return (
     <Flex
       mt={4}
+      my={1}
       flexDir="column"
       alignItems={navSize === "small" ? "center" : "flex-start"}
       w="100%"
@@ -15,18 +16,22 @@ function NavItem({ icon, title, active, navSize, onClick }) {
         justifyContent={navSize === "small" ? "center" : "flex-start"}
         bg={active ? "#AEC8CA" : "transparent"}
         borderRadius="8px"
-        p={2}
+        p={3}
+        border="none"
         _hover={{
           bg: "#AEC8CA",
           boxShadow: "none",
+          border: "none",
         }}
         _active={{
           bg: "#AEC8CA",
           boxShadow: "none",
+          border: "none",
         }}
         _focus={{
           boxShadow: "none",
           outline: "none",
+          border: "none",
         }}
       >
         <Icon
