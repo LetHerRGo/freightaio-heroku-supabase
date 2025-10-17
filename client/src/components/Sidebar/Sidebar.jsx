@@ -102,7 +102,6 @@ export default function Sidebar({ navSize, onToggleNav }) {
         <Flex mt={4} align="center">
           <Avatar.Root>
             <Avatar.Fallback name={username} />
-            <Avatar.Image src="https://bit.ly/broken-link" />
           </Avatar.Root>
           <Flex
             flexDir="column"

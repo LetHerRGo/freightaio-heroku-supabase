@@ -54,5 +54,5 @@ function NavItem({ icon, title, active, navSize, onClick }) {
   );
 }
 
-// ✅ Memoized export
+// Memoized export
 export default React.memo(NavItem);
