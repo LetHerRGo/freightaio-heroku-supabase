@@ -11,7 +11,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import Logo from "../../assets/logo/logo_with_text.svg?react";
-import supabase from "../../lib/supabaseClient";
+import { supabase } from "../../lib/supabaseClient";
 import CustomAlert from "../../components/CustomAlert/CustomAlert";
 
 function SignupPage() {
@@ -56,7 +56,7 @@ function SignupPage() {
       setError(error.message);
       return;
     }
-
+    console.log(data);
     if (data?.session) {
       navigate("/login", {
         state: { success: "Signup successful!" },
@@ -65,6 +65,9 @@ function SignupPage() {
       setSuccess(
         "Signup successful! Please check your email to confirm your account"
       );
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     }
   };
 
@@ -97,6 +100,13 @@ function SignupPage() {
               status="error"
               alertMessage={error}
               onClose={() => setError("")}
+            />
+          )}
+          {success && (
+            <CustomAlert
+              status="success"
+              alertMessage={success}
+              onClose={() => setSuccess("")}
             />
           )}
 
