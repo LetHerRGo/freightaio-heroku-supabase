@@ -17,6 +17,8 @@ import CustomAlert from "../../components/CustomAlert/CustomAlert";
 function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmError, setConfirmError] = useState("");
   const [error, setError] = useState("");
@@ -56,18 +58,25 @@ function SignupPage() {
       setError(error.message);
       return;
     }
-    console.log(data);
+
     if (data?.session) {
       navigate("/login", {
         state: { success: "Signup successful!" },
       });
     } else {
       setSuccess(
-        "Signup successful! Please check your email to confirm your account"
+        "Signup successful! Please check your email to confirm your account."
       );
       setEmail("");
+      setFirstName("");
+      setLastName("");
       setPassword("");
       setConfirmPassword("");
+      await supabase
+        .from("profiles")
+        .insert([
+          { id: data.user.id, first_name: firstName, last_name: lastName },
+        ]);
     }
   };
 
@@ -124,6 +133,32 @@ function SignupPage() {
                   borderColor="#79a5b2"
                   css={{ "--focus-color": "#275765" }}
                   autoFocus
+                />
+              </Field.Root>
+              <Field.Root required>
+                <Field.Label>
+                  First Name
+                  <Field.RequiredIndicator />
+                </Field.Label>
+                <Input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Enter your first name"
+                  borderColor="#79a5b2"
+                  css={{ "--focus-color": "#275765" }}
+                />
+              </Field.Root>
+              <Field.Root required>
+                <Field.Label>
+                  Last Name
+                  <Field.RequiredIndicator />
+                </Field.Label>
+                <Input
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Enter your Last name"
+                  borderColor="#79a5b2"
+                  css={{ "--focus-color": "#275765" }}
                 />
               </Field.Root>
               <Field.Root invalid={!!confirmError} required>
