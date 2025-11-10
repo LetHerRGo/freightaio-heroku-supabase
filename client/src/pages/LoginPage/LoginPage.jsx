@@ -16,7 +16,7 @@ import Logo from "../../assets/logo/logo_with_text.svg?react";
 import CustomAlert from "../../components/CustomAlert/CustomAlert";
 
 function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -24,20 +24,20 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username || !password) {
-      setError("Username or password cannot be empty!");
+    if (!email || !password) {
+      setError("Email or password cannot be empty!");
       return;
     }
 
     try {
       const response = await axios.post("/login", {
-        username,
+        email,
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("isAuthenticated", true);
-      navigate("/home/trace");
+      localStorage.setItem("access_token", response.data.token);
+
+      navigate("/home/track");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
     }
@@ -78,13 +78,13 @@ function LoginPage() {
             <VStack spacing={4}>
               <Field.Root>
                 <Field.Label>
-                  Username
+                  Email
                   <Field.RequiredIndicator />
                 </Field.Label>
                 <Input
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
                   borderColor="#79a5b2"
                   css={{ "--focus-color": "#275765" }}
                 />

@@ -4,7 +4,7 @@ import verifyToken from "../services/verifyToken.js";
 import verifyRole from "../services/verifyRole.js";
 // import configuration from "../knexfile.js";
 import cnTracking from "../services/cnTracking.js"
-import supabase from "../services/supabase.js";
+import {supabase} from "../services/supabase.js";
 import { parseTime } from "../services/timeParser.js";
 
 

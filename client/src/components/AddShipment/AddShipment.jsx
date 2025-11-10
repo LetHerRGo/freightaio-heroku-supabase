@@ -35,7 +35,7 @@ function AddShipment() {
 
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
   const focusRef = useRef();
 
   //open dialog for adding agent or client name

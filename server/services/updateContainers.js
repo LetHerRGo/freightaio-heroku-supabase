@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import cnTracking from './cnTracking.js';
-import supabase from './supabase.js'
+import {supabase} from './supabase.js'
 
 
 

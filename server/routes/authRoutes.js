@@ -1,18 +1,22 @@
-// import initKnex from "knex";
 import express from "express";
-// import jwt from "jsonwebtoken";
-// import configuration from "../knexfile.js";
-import authenticateUser from "../services/authService.js";
+import { supabase } from "../services/supabase.js"
 
-// const knex = initKnex(configuration);
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-    const {username, password} = req.body;
+    const {email, password} = req.body;
     
     try {
-        const token = await authenticateUser(username, password);
-        res.json({message: 'Login successful', token});
+        const {data, error} = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
+        if (error) {
+            return res.status(401).json({ message: error.message})
+        }
+        
+        
+        res.json({token: data.session.access_token});
     } catch (error) {
         res.status(400).json({message: error.message});
     }

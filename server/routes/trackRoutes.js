@@ -5,7 +5,7 @@ import cnTracking from "../services/cnTracking.js"
 
 const router = express.Router();
 
-router.post('/', verifyToken, verifyRole('operator'), async(req, res) => {
+router.post('/', verifyToken, verifyRole(['operator', 'agent']), async(req, res) => {
     const {ctnrNums} = req.body;
     
 

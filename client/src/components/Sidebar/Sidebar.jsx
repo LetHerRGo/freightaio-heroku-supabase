@@ -6,19 +6,14 @@ import NavItem from "./NavItem.jsx";
 import { CiLogout, CiSearch } from "react-icons/ci";
 import { MdOutlineDirectionsRailway } from "react-icons/md";
 import { CgPlayListAdd } from "react-icons/cg";
-import { jwtDecode } from "jwt-decode";
+import { supabase } from "../../lib/supabaseClient.js";
 
 export default function Sidebar({ navSize, onToggleNav }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const token = localStorage.getItem("token");
-  let username = "";
-
-  if (token) {
-    const decoded = jwtDecode(token);
-    username = decoded.username;
-  }
+  const token = localStorage.getItem("access_token");
+  let username = "user";
 
   const navItems = [
     { icon: MdOutlineDirectionsRailway, title: "Trace", path: "/home/trace" },
@@ -32,10 +27,20 @@ export default function Sidebar({ navSize, onToggleNav }) {
     [navigate]
   );
 
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("isAuthenticated");
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = useCallback(async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Logout error:", error.message);
+      } else {
+        console.log("User logged out successfully");
+      }
+
+      localStorage.removeItem("access_token");
+      navigate("/login");
+    } catch (err) {
+      console.error("Unexpected logout error:", err);
+    }
   }, [navigate]);
 
   return (

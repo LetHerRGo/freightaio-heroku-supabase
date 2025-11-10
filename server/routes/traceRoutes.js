@@ -1,7 +1,7 @@
 import express from "express";
 import verifyToken from "../services/verifyToken.js";
 import verifyRole from "../services/verifyRole.js";
-import supabase from "../services/supabase.js";
+import {supabase} from "../services/supabase.js";
 
 const router = express.Router();
 

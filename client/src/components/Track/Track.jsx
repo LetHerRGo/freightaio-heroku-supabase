@@ -22,8 +22,8 @@ function Track() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (!isAuthenticated) {
+    const isLogedIn = localStorage.getItem("access_token");
+    if (!isLogedIn) {
       navigate("/");
     }
   }, [navigate]);
@@ -31,9 +31,10 @@ function Track() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     if (!token) {
       console.error("Token not found in localStorage");
+      navigate("/login");
     }
 
     try {
@@ -52,8 +53,7 @@ function Track() {
       setCtnrNums("");
     } catch (error) {
       if (error.response?.status === 401) {
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         navigate("/login");
       } else {
         setError(error.response.data.message);

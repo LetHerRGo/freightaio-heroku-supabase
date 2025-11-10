@@ -27,7 +27,7 @@ function Trace() {
   const [sortByColumn, setSortByColumn] = useState();
   const [sortOrder, setSortOrder] = useState();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
 
   const readData = async (sortBy, order) => {
     try {
