@@ -41,6 +41,12 @@ function Trace() {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setCtnrData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -48,13 +54,7 @@ function Trace() {
   };
   useEffect(() => {
     if (!token) {
-      console.error("Token not found in localStorage");
-      return;
-    }
-
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login");
       return;
     }
 
@@ -64,11 +64,17 @@ function Trace() {
   // delete function
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/trace/${id}`, {
+      const response = await axios.delete(`/trace/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
 
       // Filter out the deleted row from state
       setCtnrData((prevData) => prevData.filter((item) => item.id !== id));

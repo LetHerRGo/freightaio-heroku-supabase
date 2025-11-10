@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { supabase } from "../../lib/supabaseClient";
 
 import {
   Box,
@@ -48,6 +49,12 @@ function Track() {
           },
         }
       );
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setCtnrData(response.data.equipmentList);
       setError("");
       setCtnrNums("");

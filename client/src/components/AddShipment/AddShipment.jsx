@@ -64,6 +64,12 @@ function AddShipment() {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setAgents(response.data); // Assuming response is an array of agent names
     } catch (error) {
       console.error("Error fetching agent names:", error);
@@ -79,6 +85,12 @@ function AddShipment() {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setClients(response.data);
     } catch (error) {
       console.error("Error fetching client names:", error);
@@ -87,8 +99,7 @@ function AddShipment() {
   };
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (!isAuthenticated) {
+    if (!token) {
       navigate("/"); // if not login, direct to /
     }
     focusRef.current.focus();
