@@ -31,9 +31,17 @@ function AddShipment() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const navigate = useNavigate();
-
   const token = localStorage.getItem("access_token");
   const focusRef = useRef();
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/"); // if not login, direct to /
+    }
+    focusRef.current.focus();
+    fetchClients();
+    fetchAgents();
+  }, [navigate]);
 
   //open dialog for adding agent or client name
   const openAddAgentDialog = (item) => {
@@ -95,16 +103,6 @@ function AddShipment() {
     }
   };
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/"); // if not login, direct to /
-    }
-    focusRef.current.focus();
-
-    fetchClients();
-    fetchAgents();
-  }, [navigate]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -114,11 +112,6 @@ function AddShipment() {
       setError(
         "Invalid container number. Format must be 4 letters followed by 7 digits (e.g., ZCSU4028251)."
       );
-      return;
-    }
-
-    if (!token) {
-      console.error("Token not found in localStorage");
       return;
     }
 

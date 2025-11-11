@@ -5,10 +5,10 @@ const verifyRole = (requiredRole) => {
             if (!req.user?.id) {
                 return res.status(401).json({message: "Usernot authenticated."})
             }
-            const uuid = req.user.id;
+            const operatorId = req.user.id;
 
             // Fetch role from your 'profiles' table
-            const { data: profile, error } = await supabase.from("profiles").select("role").eq("id", uuid).single();
+            const { data: profile, error } = await supabase.from("profiles").select("role").eq("id", operatorId).single();
 
             if (error) {
             console.error("Error fetching user role:", error.message);

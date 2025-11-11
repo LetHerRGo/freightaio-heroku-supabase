@@ -1,8 +1,6 @@
-// import initKnex from "knex";
 import express from "express";
 import verifyToken from "../services/verifyToken.js";
 import verifyRole from "../services/verifyRole.js";
-// import configuration from "../knexfile.js";
 import cnTracking from "../services/cnTracking.js"
 import {supabase} from "../services/supabase.js";
 import { parseTime } from "../services/timeParser.js";
@@ -11,11 +9,11 @@ import { parseTime } from "../services/timeParser.js";
 const router = express.Router();
 
 router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
+  const operatorId = req.user.id;
   const { ctnrNum, agentName, clientName, refNum } = req.body;
+
+
+  console.log(agentName);
 
   // Check if container exists
   const { data: existing } = await supabase
@@ -29,31 +27,34 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
   }
 
   // Fetch foreign keys
+  const {data: profile, error: profileError} = await supabase.from("profiles").select("company_name").eq("id", operatorId).single();
   const [
     { data: agent, error: agentError },
-    { data: operator, error: operatorError },
     { data: forwarder, error: forwarderError },
     { data: client, error: clientError }
   ] = await Promise.all([
     supabase.from("agent").select("id").eq("name", agentName).single(),
-    supabase.from("forwarder_operator").select("id").eq("username", req.user.username).single(),
-    supabase.from("forwarder_operator").select("forwarder_id").eq("username", req.user.username).single(),
+    supabase.from("forwarder").select("id").eq("name", profile.company_name).single(),
     supabase.from("client").select("id").eq("name", clientName).single()
   ]);
+  
+  console.log(agent);
+  console.log(forwarder);
+  console.log(client);
 
-  if (!agent || !operator || !forwarder || !client) {
+  if (!agent || !forwarder || !client) {
     return res.status(400).json({ message: "One or more related records not found." });
   }
 
   try {
-    // Insert into containers
+    // Insert into containers, adding container is working, but got error from cnTracking, need to filert cnTracking error before adding
     const { data: containerInsert, error: containerInsertError } = await supabase
       .from("containers")
       .insert({
         container_number: ctnrNum,
         agent_id: agent.id,
-        operator_id: operator.id,
-        forwarder_id: forwarder.forwarder_id,
+        operator_id: operatorId,
+        forwarder_id: forwarder.id,
         client_id: client.id,
         forwarder_ref: refNum
       })
@@ -64,7 +65,7 @@ router.post('/', verifyToken, verifyRole('operator'), async (req, res) => {
 
     const container_id = containerInsert.id;
 
-    // Fetch tracking info
+    // Fetch tracking info, 
     const trackingData = await cnTracking([ctnrNum]);
     const equipment = trackingData?.ThirdPartyIntermodalShipment?.Equipment?.[0];
     console.log(equipment.ETA.Time)
