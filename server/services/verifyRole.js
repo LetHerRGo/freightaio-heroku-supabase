@@ -7,7 +7,7 @@ const verifyRole = (requiredRole) => {
             }
             const uuid = req.user.id;
 
-            // 2️⃣ Fetch role from your 'profiles' table
+            // Fetch role from your 'profiles' table
             const { data: profile, error } = await supabase.from("profiles").select("role").eq("id", uuid).single();
 
             if (error) {

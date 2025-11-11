@@ -27,6 +27,15 @@ function Trace() {
   const [sortByColumn, setSortByColumn] = useState();
   const [sortOrder, setSortOrder] = useState();
 
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    readData(sortByColumn, sortOrder);
+  }, [sortByColumn, sortOrder]);
+
   const token = localStorage.getItem("access_token");
 
   const readData = async (sortBy, order) => {
@@ -52,14 +61,6 @@ function Trace() {
       console.error("Error fetching data:", error);
     }
   };
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
-    readData(sortByColumn, sortOrder);
-  }, [sortByColumn, sortOrder]);
 
   // delete function
   const handleDelete = async (id) => {

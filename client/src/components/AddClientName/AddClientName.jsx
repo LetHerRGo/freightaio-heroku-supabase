@@ -8,6 +8,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function AddClientName({
   isOpen,
@@ -19,13 +20,15 @@ function AddClientName({
 }) {
   const [clientName, setClientName] = useState("");
 
-  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("access_token");
 
   const handleAddAgent = async () => {
     if (!clientName.trim()) return;
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `/${formName}`,
         { name: clientName },
         {
@@ -35,6 +38,12 @@ function AddClientName({
           },
         }
       );
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setClientName("");
       onClose();
       setDialogMessage("Client added successfully.");
@@ -48,7 +57,7 @@ function AddClientName({
       }
       setDialogError(error.response?.data?.message || "Failed to add agent.");
       setDialogMessage("");
-      console.error("Request error:", error);
+      onClose();
     }
   };
 

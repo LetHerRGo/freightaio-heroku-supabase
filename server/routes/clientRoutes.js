@@ -7,23 +7,13 @@ import {supabase} from "../services/supabase.js";
 const router = express.Router();
 
 router.get("/", verifyToken, verifyRole('operator'), async (req, res) => {
-  const { username } = req.user;
+  const operatorId  = req.user.id;
 
    try {
-    const { data: forwarder, error: forwarderError } = await supabase
-      .from("forwarder_operator")
-      .select("forwarder_id")
-      .eq("username", username)
-      .single();
-    
-    if (forwarderError || !forwarder) {
-      return res.status(404).json({ message: "Forwarder not found." });
-    }
-
     const { data: clients, error } = await supabase
       .from("client")
       .select("id, name")
-      .eq("forwarder_id", forwarder.forwarder_id);
+      .eq("operator_id", operatorId);
 
     if (error) {
       return res.status(500).json({ message: "Unable to retrieve data." });
@@ -38,31 +28,20 @@ router.get("/", verifyToken, verifyRole('operator'), async (req, res) => {
 
 router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
   const { name } = req.body;
-  const { username } = req.user;
+  const operatorId = req.user.id
 
    if (!name || typeof name !== "string") {
     return res.status(400).json({ message: "Client name is required." });
   }
 
-  // 1. Get forwarder_id from the operator's username
-  const { data: operator, error: operatorError } = await supabase
-    .from("forwarder_operator")
-    .select("forwarder_id")
-    .eq("username", username)
-    .single();
 
-  if (operatorError || !operator) {
-    return res.status(404).json({ message: "Operator's forwarder ID not found." });
-  }
-
-  const forwarder_id = operator.forwarder_id;
 
   // Check for duplicate
   const { data: existing, error: checkError } = await supabase
     .from("client")
     .select("*")
     .eq("name", name)
-    .eq("forwarder_id", forwarder_id)
+    .eq("operator_id", operatorId)
     .maybeSingle(); 
 
   if (existing) {
@@ -77,7 +56,7 @@ router.post("/", verifyToken, verifyRole('operator'),async (req, res) => {
   // Insert client
   const { data: inserted, error: insertError } = await supabase
     .from("client")
-    .insert({ name, forwarder_id })
+    .insert({ name, operator_id: operatorId })
     .select("id")
     .single();
 

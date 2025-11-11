@@ -6,8 +6,6 @@ import {
   Flex,
   Heading,
   Highlight,
-  Alert,
-  CloseButton,
   Field,
   NativeSelect,
   Button,
@@ -17,6 +15,7 @@ import {
 import { IoMdAdd } from "react-icons/io";
 import AddAgentName from "../AddAgentName/AddAgentName.jsx";
 import AddClientName from "../AddClientName/AddClientName.jsx";
+import CustomAlert from "../CustomAlert/CustomAlert.jsx";
 
 function AddShipment() {
   const [ctnrNum, setCtnrNum] = useState("");
@@ -30,8 +29,6 @@ function AddShipment() {
   const [addAgentDialogOpen, setAddAgentDialogOpen] = useState(false);
   const [addClientDialogOpen, setAddClientDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [dialogMessage, setDialogMessage] = useState("");
-  const [dialogError, setDialogError] = useState("");
 
   const navigate = useNavigate();
 
@@ -141,13 +138,18 @@ function AddShipment() {
           },
         }
       );
+      if (response.status === 401) {
+        await supabase.auth.signOut();
+        localStorage.removeItem("access_token");
+        navigate("/login");
+        return;
+      }
       setSuccess(response.data?.message || "Container added successfully.");
       setError("");
       setCtnrNum("");
       setRefNum("");
     } catch (error) {
       if (error.response?.status === 401) {
-        localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("token");
         navigate("/login");
       }
@@ -171,57 +173,18 @@ function AddShipment() {
 
         <form className="containerInput-form" onSubmit={handleSubmit}>
           {error && (
-            <Alert.Root status="error">
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>Error!</Alert.Title>
-                <Alert.Description>{error}</Alert.Description>
-              </Alert.Content>
-              <CloseButton
-                pos="relative"
-                top="-2"
-                insetEnd="-2"
-                variant="ghost"
-                onClick={() => setError("")}
-              />
-            </Alert.Root>
+            <CustomAlert
+              status="error"
+              alertMessage={error}
+              onClose={() => setError("")}
+            />
           )}
           {success && (
-            <Alert.Root status="success">
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>Success!</Alert.Title>
-                <Alert.Description>{success}</Alert.Description>
-              </Alert.Content>
-              <CloseButton
-                pos="relative"
-                top="-2"
-                insetEnd="-2"
-                variant="ghost"
-                onClick={() => setSuccess("")}
-              />
-            </Alert.Root>
-          )}
-          {dialogError && (
-            <Alert.Root status="error">
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>Error</Alert.Title>
-                <Alert.Description>{dialogError}</Alert.Description>
-              </Alert.Content>
-              <CloseButton onClick={() => setDialogError("")} />
-            </Alert.Root>
-          )}
-
-          {dialogMessage && (
-            <Alert.Root status="success">
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>Success</Alert.Title>
-                <Alert.Description>{dialogMessage}</Alert.Description>
-              </Alert.Content>
-              <CloseButton onClick={() => setDialogMessage("")} />
-            </Alert.Root>
+            <CustomAlert
+              status="success"
+              alertMessage={success}
+              onClose={() => setSuccess("")}
+            />
           )}
           <Field.Root>
             <Field.Label>
@@ -315,8 +278,8 @@ function AddShipment() {
             onClose={closeDialog}
             formName={selectedItem}
             refreshAgents={fetchAgents}
-            setDialogMessage={setDialogMessage}
-            setDialogError={setDialogError}
+            setDialogMessage={setSuccess}
+            setDialogError={setError}
           />
         )}
         {addClientDialogOpen && selectedItem && (
@@ -325,8 +288,8 @@ function AddShipment() {
             onClose={closeDialog}
             formName={selectedItem}
             refreshClients={fetchClients}
-            setDialogMessage={setDialogMessage}
-            setDialogError={setDialogError}
+            setDialogMessage={setSuccess}
+            setDialogError={setError}
           />
         )}
       </Flex>
