@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Flex, IconButton, Box, Avatar, Heading } from "@chakra-ui/react";
+import { Flex, IconButton, Avatar, Heading } from "@chakra-ui/react";
 import { FiMenu } from "react-icons/fi";
 import NavItem from "./NavItem.jsx";
 import { CiLogout, CiSearch } from "react-icons/ci";
@@ -100,7 +100,6 @@ export default function Sidebar({ navSize, onToggleNav }) {
       <Flex
         p="5%"
         flexDir="column"
-        // w="100%"
         alignItems={navSize == "small" ? "center" : "flex-start"}
         mb={4}
       >

@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { supabase } from "../../lib/supabaseClient";
-
+import CustomAlert from "../CustomAlert/CustomAlert";
 import {
   Box,
   Table,
   Flex,
   Heading,
   Highlight,
-  Alert,
-  CloseButton,
   Field,
   Textarea,
   Button,
@@ -20,6 +18,8 @@ function Track() {
   const navigate = useNavigate();
   const [ctnrNums, setCtnrNums] = useState("");
   const [ctnrData, setCtnrData] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [warningMessage, setWarningMessage] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -34,7 +34,6 @@ function Track() {
 
     const token = localStorage.getItem("access_token");
     if (!token) {
-      console.error("Token not found in localStorage");
       navigate("/login");
     }
 
@@ -55,9 +54,18 @@ function Track() {
         navigate("/login");
         return;
       }
-      setCtnrData(response.data.equipmentList);
+      const { equipmentList, message } = response.data;
+      setCtnrData(equipmentList);
+
+      if (message?.includes("No data available")) {
+        setWarningMessage(message);
+        setSuccessMessage("");
+      } else {
+        setSuccessMessage(message || "Tracking data fetched successfully.");
+        setWarningMessage("");
+      }
+
       setError("");
-      setCtnrNums("");
     } catch (error) {
       if (error.response?.status === 401) {
         localStorage.removeItem("access_token");
@@ -77,21 +85,27 @@ function Track() {
           </Highlight>
         </Heading>
         <form className="containerInput-form" onSubmit={handleSubmit}>
+          {successMessage && (
+            <CustomAlert
+              status="success"
+              alertMessage={successMessage}
+              onClose={() => setSuccessMessage("")}
+            />
+          )}
+
+          {warningMessage && (
+            <CustomAlert
+              status="warning"
+              alertMessage={warningMessage}
+              onClose={() => setWarningMessage("")}
+            />
+          )}
           {error && (
-            <Alert.Root status="error">
-              <Alert.Indicator />
-              <Alert.Content>
-                <Alert.Title>Error!</Alert.Title>
-                <Alert.Description>{error}</Alert.Description>
-              </Alert.Content>
-              <CloseButton
-                pos="relative"
-                top="-2"
-                insetEnd="-2"
-                variant="ghost"
-                onClick={() => setError("")}
-              />
-            </Alert.Root>
+            <CustomAlert
+              status="error"
+              alertMessage={error}
+              onClose={() => setError("")}
+            />
           )}
           <Field.Root required>
             <Field.Label>

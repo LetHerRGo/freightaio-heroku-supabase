@@ -19,7 +19,6 @@ router.post('/', verifyToken, verifyRole(['operator', 'agent']), async(req, res)
 
 
     try {
-        
         const data = await cnTracking(extractedContainers);
         const equipmentList = data.ThirdPartyIntermodalShipment.Equipment.map((equipment) => {
             return {
@@ -34,11 +33,26 @@ router.post('/', verifyToken, verifyRole(['operator', 'agent']), async(req, res)
                 storageLastFreeDay: equipment.StorageCharge?.LastFreeDay || "N/A",
             }
         });
+        const ctnrSet = new Set(extractedContainers);
+        const trackedCtnrSet = new Set(equipmentList.map(e => e.id.trim().toUpperCase().slice(0, 10)));
+        const noDataCtnrs = [];
+        for (const ctnr of ctnrSet) {
+            const normalized = ctnr.trim().toUpperCase().slice(0, 10);
+            if (!trackedCtnrSet.has(normalized)) {
+                noDataCtnrs.push(ctnr);
+            }
+        }
+       
+        if (noDataCtnrs.length) {
+            return res.json({
+            equipmentList: equipmentList,
+            message: `No data available for ${noDataCtnrs.join(",")}`
+        })
+        }
         res.json({
             equipmentList: equipmentList
         })
     } catch(error) {
-        console.log(error);
         res.status(400).json({message: error.message});
     }
 })

@@ -57,19 +57,14 @@ async function tracking(ctnrNums) {
     //convert container number to single string and comma-separated
     const modifiedCtnrNums = ctnrNums.map(normalizeContainerNumber).join(",");
     
-
-
     const trackingParam = {
         equipmentIds: modifiedCtnrNums
     }
     try {
-    const response = await axios.get(trackingUrl, { headers, params: trackingParam } );
-    // console.log(JSON.stringify(response.data, null, 2));
-    return response.data;
-    
+        const response = await axios.get(trackingUrl, { headers, params: trackingParam } );
+        return response.data;
     } catch(error) {
-        console.error('Error fetching tracking data:', error.message);
-        return { error: "Error fetching tracking data. Please try again later." };
+        return error ;
     }
 }
 
