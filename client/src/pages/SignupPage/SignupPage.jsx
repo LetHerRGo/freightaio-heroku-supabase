@@ -60,10 +60,6 @@ function SignupPage() {
     }
 
     if (data?.session) {
-      navigate("/login", {
-        state: { success: "Signup successful!" },
-      });
-    } else {
       setSuccess(
         "Signup successful! Please check your email to confirm your account."
       );
@@ -77,6 +73,11 @@ function SignupPage() {
         .insert([
           { id: data.user.id, first_name: firstName, last_name: lastName },
         ]);
+      // navigate("/login", {
+      //   state: { success: "Signup successful!" },
+      // });
+    } else {
+      setError(error.message);
     }
   };
 
