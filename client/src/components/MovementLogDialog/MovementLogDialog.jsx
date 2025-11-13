@@ -13,7 +13,7 @@ import axios from "axios";
 function MovementLogDialog({ isOpen, onClose, containerId, containerNumber }) {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
 
   useEffect(() => {
     const fetchLogs = async () => {

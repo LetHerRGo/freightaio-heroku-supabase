@@ -10,6 +10,10 @@ router.get('/', verifyToken, verifyRole(['operator', 'agent', 'client']), async 
   try {
     const { role, username } = req.user;
     const { sortBy, order } = req.query;
+    if (!req.user?.id) {
+        return res.status(401).json({message: "Usernot authenticated."})
+    }
+    const operatorId = req.user.id;
 
     const allowedColumns = [
       "container_number",
@@ -23,31 +27,31 @@ router.get('/', verifyToken, verifyRole(['operator', 'agent', 'client']), async 
     ];
 
     // Get user's role-based ID
-    let idField;
-    let userId;
-    if (role === 'operator') {
-      const { data, error } = await supabase.from("forwarder_operator").select("id").eq("username", username).single();
-      if (error || !data) return res.status(404).json({ message: "Operator not found." });
-      idField = "operator_id";
-      userId = data.id;
-    } else if (role === 'agent') {
-      const { data, error } = await supabase.from("agent_user").select("agent_id").eq("username", username).single();
-      if (error || !data) return res.status(404).json({ message: "Agent not found." });
-      idField = "agent_id";
-      userId = data.agent_id;
-    } else if (role === 'client') {
-      const { data, error } = await supabase.from("client_user").select("client_id").eq("username", username).single();
-      if (error || !data) return res.status(404).json({ message: "Client not found." });
-      idField = "client_id";
-      userId = data.client_id;
-    }
+    // let idField;
+    // let userId;
+    // if (role === 'operator') {
+    //   const { data, error } = await supabase.from("forwarder_operator").select("id").eq("username", username).single();
+    //   if (error || !data) return res.status(404).json({ message: "Operator not found." });
+    //   idField = "operator_id";
+    //   userId = data.id;
+    // } else if (role === 'agent') {
+    //   const { data, error } = await supabase.from("agent_user").select("agent_id").eq("username", username).single();
+    //   if (error || !data) return res.status(404).json({ message: "Agent not found." });
+    //   idField = "agent_id";
+    //   userId = data.agent_id;
+    // } else if (role === 'client') {
+    //   const { data, error } = await supabase.from("client_user").select("client_id").eq("username", username).single();
+    //   if (error || !data) return res.status(404).json({ message: "Client not found." });
+    //   idField = "client_id";
+    //   userId = data.client_id;
+    // }
 
     // Build query to the view
-    let query = supabase.from("container_movements_with_info").select("*");
+    let query = supabase.from("container_movements_with_info").select("*").eq("operator_id", operatorId)
 
-    if (idField && userId) {
-      query = query.eq(idField, userId);
-    }
+    // if (idField && userId) {
+    //   query = query.eq(idField, userId);
+    // }
 
     // Add sorting
     if (sortBy && allowedColumns.includes(sortBy.toLowerCase())) {

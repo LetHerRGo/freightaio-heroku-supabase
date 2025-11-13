@@ -1,11 +1,9 @@
-// import initKnex from "knex";
 import express from "express";
-// import configuration from "../knexfile.js";
 import verifyToken from "../services/verifyToken.js";
 import verifyRole from "../services/verifyRole.js";
 import {supabase} from "../services/supabase.js";
 
-// const knex = initKnex(configuration);
+
 const router = express.Router();
 
 router.get('/:containerNumber', verifyToken, verifyRole('operator'), async (req, res) => {
@@ -28,8 +26,6 @@ router.get('/:containerNumber', verifyToken, verifyRole('operator'), async (req,
     }
 
     const containerId = containers.id;
-
-
 
     const { data: logs, error } = await supabase
       .from("container_movement_logs")
