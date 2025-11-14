@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../../lib/supabaseClient.js";
 
 function AddAgentName({
   isOpen,
@@ -38,12 +39,7 @@ function AddAgentName({
           },
         }
       );
-      if (response.status === 401) {
-        await supabase.auth.signOut();
-        localStorage.removeItem("access_token");
-        navigate("/login");
-        return;
-      }
+
       setAgentName("");
       onClose();
       setDialogMessage("Agent added successfully.");
@@ -51,6 +47,7 @@ function AddAgentName({
       await refreshAgents?.();
     } catch (error) {
       if (error.response?.status === 401) {
+        await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
       }

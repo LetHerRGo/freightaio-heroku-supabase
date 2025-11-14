@@ -62,6 +62,7 @@ function Track() {
       setError("");
     } catch (error) {
       if (error.response?.status === 401) {
+        await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
       } else {

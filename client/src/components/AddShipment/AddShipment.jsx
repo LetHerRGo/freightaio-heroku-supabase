@@ -16,6 +16,7 @@ import { IoMdAdd } from "react-icons/io";
 import AddAgentName from "../AddAgentName/AddAgentName.jsx";
 import AddClientName from "../AddClientName/AddClientName.jsx";
 import CustomAlert from "../CustomAlert/CustomAlert.jsx";
+import { supabase } from "../../lib/supabaseClient.js";
 
 function AddShipment() {
   const [ctnrNum, setCtnrNum] = useState("");
@@ -72,7 +73,7 @@ function AddShipment() {
 
       setAgents(response.data); // Assuming response is an array of agent names
     } catch (error) {
-      if (response.status === 401) {
+      if (error.response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
@@ -93,7 +94,7 @@ function AddShipment() {
 
       setClients(response.data);
     } catch (error) {
-      if (response.status === 401) {
+      if (error.response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
@@ -138,7 +139,7 @@ function AddShipment() {
     } catch (error) {
       if (error.response?.status === 401) {
         await supabase.auth.signOut();
-        localStorage.removeItem("token");
+        localStorage.removeItem("access_token");
         navigate("/login");
       }
 

@@ -16,6 +16,7 @@ import { IoIosMore } from "react-icons/io";
 import MovementLogDialog from "../MovementLogDialog/MovementLogDialog";
 import DeleteContainerDialog from "../DeleteContainerDialog/DeleteContainerDialog";
 import { FaSort } from "react-icons/fa";
+import { supabase } from "../../lib/supabaseClient.js";
 
 function Trace() {
   const navigate = useNavigate();
@@ -53,13 +54,13 @@ function Trace() {
 
       setCtnrData(response.data);
     } catch (error) {
-      if (response.status === 401) {
+      if (error.response?.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
-      setError("Failed to fetch container data.");
+      setError(error.response?.data?.message);
     }
   };
 
@@ -75,7 +76,7 @@ function Trace() {
       // Filter out the deleted row from state
       setCtnrData((prevData) => prevData.filter((item) => item.id !== id));
     } catch (error) {
-      if (response.status === 401) {
+      if (error.response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
