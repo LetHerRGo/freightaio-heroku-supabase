@@ -48,12 +48,6 @@ function Track() {
           },
         }
       );
-      if (response.status === 401) {
-        await supabase.auth.signOut();
-        localStorage.removeItem("access_token");
-        navigate("/login");
-        return;
-      }
       const { equipmentList, message } = response.data;
       setCtnrData(equipmentList);
 

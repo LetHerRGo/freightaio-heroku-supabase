@@ -69,15 +69,15 @@ function AddShipment() {
           "Content-Type": "application/json",
         },
       });
+
+      setAgents(response.data); // Assuming response is an array of agent names
+    } catch (error) {
       if (response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
-      setAgents(response.data); // Assuming response is an array of agent names
-    } catch (error) {
-      console.error("Error fetching agent names:", error);
       setError("Failed to fetch agent names.");
     }
   };
@@ -90,15 +90,15 @@ function AddShipment() {
           "Content-Type": "application/json",
         },
       });
+
+      setClients(response.data);
+    } catch (error) {
       if (response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
-      setClients(response.data);
-    } catch (error) {
-      console.error("Error fetching client names:", error);
       setError("Failed to fetch client names.");
     }
   };
@@ -131,18 +131,13 @@ function AddShipment() {
           },
         }
       );
-      if (response.status === 401) {
-        await supabase.auth.signOut();
-        localStorage.removeItem("access_token");
-        navigate("/login");
-        return;
-      }
       setSuccess(response.data?.message || "Container added successfully.");
       setError("");
       setCtnrNum("");
       setRefNum("");
     } catch (error) {
       if (error.response?.status === 401) {
+        await supabase.auth.signOut();
         localStorage.removeItem("token");
         navigate("/login");
       }

@@ -50,15 +50,16 @@ function Trace() {
           "Content-Type": "application/json",
         },
       });
+
+      setCtnrData(response.data);
+    } catch (error) {
       if (response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
-      setCtnrData(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setError("Failed to fetch container data.");
     }
   };
 
@@ -70,16 +71,16 @@ function Trace() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      // Filter out the deleted row from state
+      setCtnrData((prevData) => prevData.filter((item) => item.id !== id));
+    } catch (error) {
       if (response.status === 401) {
         await supabase.auth.signOut();
         localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
-
-      // Filter out the deleted row from state
-      setCtnrData((prevData) => prevData.filter((item) => item.id !== id));
-    } catch (error) {
       setError("Failed to delete container.");
     }
   };

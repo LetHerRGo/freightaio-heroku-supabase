@@ -37,7 +37,7 @@ function LoginPage() {
 
       localStorage.setItem("access_token", response.data.token);
 
-      navigate("/home/track");
+      navigate("/home/trace");
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred");
     }
